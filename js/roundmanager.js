@@ -11,15 +11,7 @@ RoundManager.prototype.getCurRound = function(){
 
 RoundManager.prototype.createRounds = function(){
 	var rounds = [];
-	
-	/*var spawnDistribution_1 = [
-		{type : ZOMBIE, rate : .015},
-		{type : ZOMBIEDOG, rate : .005}
-		
-	];*/
-	
-	//rounds.push(new Round(undefined,spawnDistribution_1,100));
-	
+
 	rounds.push(new Round(11));
 	
 	return rounds;

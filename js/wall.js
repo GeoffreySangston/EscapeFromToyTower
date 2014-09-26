@@ -11,6 +11,8 @@ function Wall(x,y){
 	this.theta = 0;
 	this.viewWidth = 64;
 	this.viewHeight = 64;
+	this.blockWidth = 64; // the width/height of each section of the wall
+	this.blockHeight = 64;
 	this.x = x;
 	this.y = y;
 	this.collisionX = this.x;

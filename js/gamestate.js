@@ -42,43 +42,30 @@ GameState.prototype.initMazeWalls = function(){
 	for(var i = 0; i < maze.numTileRows; i++){
 		for(var j = 0; j < maze.numTileColumns; j++){
 			var curTileVal = maze.mazeTiles[i*maze.numTileColumns + j];
-			var upTileVal;
-			var leftTileVal;
-			/*if(i - 1 >= 0){
-				upTileVal = maze.mazeTiles[(i-1)*maze.numTileColumns + j];
-			}
-			if(j - 1 >= 0){
-				leftTileVal = maze.mazeTiles[i*maze.numTileColumns + (j - 1)];
-			}
-			if(curTileVal == 1){
-				var wall = new Wall(-1,-1);
-				var width = wall.viewWidth;
-				var height = wall.viewHeight;
-				wall.setCenter(2*width*j, 2*height*i);
-				this.entities.push(wall);
-				
-				if(upTileVal == 1){
-					var wall = new Wall(-1, -1);
-					wall.setCenter(2*width*j, 2*height*i - height);
-					this.entities.push(wall);
-				}
-				if(leftTileVal == 1){
-					var wall = new Wall(-1, -1);
-					wall.setCenter(2*width*j - width, 2*height*i);
-					this.entities.push(wall);
-				}
-
-			}*/
+			var curNumBlocksWide = 0;
+			var wall = new Wall(-1,-1);
+			var wallStartX = wall.blockWidth*j;
+			var wallStartY = wall.blockHeight*i;
+			
+			while(curTileVal == 1 && j < maze.numTileColumns){				
+				curTileVal = maze.mazeTiles[i*maze.numTileColumns + (j+1)];
 				if(curTileVal == 1){
-					var wall = new Wall(-1,-1);
-					var width = wall.viewWidth;
-					var height = wall.viewHeight;
-					wall.x = width*j;
-					wall.y = height*i;
-					this.entities.push(wall);
+					j++;
 				}
+				curNumBlocksWide++;
+			}
+			
+			if(curNumBlocksWide > 0){
+			wall.viewWidth = curNumBlocksWide * wall.blockWidth;
+			wall.x = wallStartX;
+			wall.y = wallStartY;
+			console.log(wall.viewWidth);
+			this.entities.push(wall);
+			}
 		}
 	}
+	
+	console.log(this.entities);
 };
 
 GameState.prototype.destroy = function(game){
