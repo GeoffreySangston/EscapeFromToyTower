@@ -12,7 +12,7 @@ RoundManager.prototype.getCurRound = function(){
 RoundManager.prototype.createRounds = function(){
 	var rounds = [];
 
-	rounds.push(new Round(11));
+	rounds.push(new Round(5));
 	
 	return rounds;
 };

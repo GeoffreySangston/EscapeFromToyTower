@@ -8,6 +8,7 @@ function Entity(x,y){
 	this.type;
 	this.x = x;
 	this.y = y;
+
 	this.viewWidth;
 	this.viewHeight;
 	this.pw; // rotate point
@@ -36,7 +37,7 @@ function Entity(x,y){
 
 Entity.prototype.collides = function(oe){
 	if(this.collidable && oe.collidable){
-		return this.circleCircleCollides(oe);
+		return this.rectRectCollides(oe);
 	}
 };
 
@@ -56,6 +57,16 @@ Entity.prototype.circleCircleCollides = function(oe){
 	return thisRad + oeRad > dist;
 };
 
+Entity.prototype.rectRectCollides = function(oe){
+	//return !(x_1 > x_2+width_2 || x_1+width_1 < x_2 || y_1 > y_2+height_2 || y_1+height_1 < y_2);
+	var thisColWidth = this.collisionWidth;
+	var thisColHeight = this.collisionHeight;
+	var oeColWidth = oe.collisionWidth;
+	var oeColHeight = oe.collisionHeight;
+	
+	return !(this.x > oe.x + oeColWidth || this.x + thisColWidth < oe.x || this.y > oe.y + oeColHeight || this.y + thisColHeight < oe.y);
+};
+
 Entity.prototype.__calcCenterTheta = function(){ // angle between top left corner and center
 	return Math.atan2(this.viewHeight, this.viewWidth);
 };
@@ -70,6 +81,15 @@ Entity.prototype.calcCenterXY = function(){
 
 Entity.prototype.calcCollisionXY = function(){
 	return this.calcCenterXY();
+};
+
+Entity.prototype.calcAngleToOECenter = function(oe){
+	var oeCenter = oe.calcCenterXY();
+	var thisCenter = this.calcCenterXY();			
+			
+	var theta = Math.atan2(thisCenter.y - oeCenter.y, thisCenter.x - oeCenter.x);
+	theta = (theta + 2*Math.PI) % (2*Math.PI);
+	return theta;		
 };
 
 Entity.prototype.setCenter = function(cx,cy){

@@ -56,11 +56,11 @@ GameState.prototype.initMazeWalls = function(){
 			}
 			
 			if(curNumBlocksWide > 0){
-			wall.viewWidth = curNumBlocksWide * wall.blockWidth;
-			wall.x = wallStartX;
-			wall.y = wallStartY;
-			console.log(wall.viewWidth);
-			this.entities.push(wall);
+				wall.viewWidth = curNumBlocksWide * wall.blockWidth;
+				wall.collisionWidth = wall.viewWidth;
+				wall.x = wallStartX;
+				wall.y = wallStartY;
+				this.entities.push(wall);
 			}
 		}
 	}
@@ -85,9 +85,9 @@ GameState.prototype.update = function(game){
 		this.handleDialogueInputs(game);
 		this.handleDialogue(game);
 	}
+	this.updateEntities(game);
 	this.checkCollisions();
 	this.actCollisions();
-	this.updateEntities(game);
 	this.cleanup(game);
 	this.centerCamera(game);
 	this.localTicks++;
@@ -105,6 +105,10 @@ GameState.prototype.handleEvents = function(game){
 
 GameState.prototype.handlePlayInputs = function(game){	
 	var player = game.player;
+	
+	player.lastX = player.x;
+	player.lastY = player.y;
+	
 	if(game.inputHandler.keyStates[A] == KEYDOWN || game.inputHandler.keyStates[LEFT] == KEYDOWN){
 		player.moveLeft();
 	} else if(game.inputHandler.keyStates[D] == KEYDOWN || game.inputHandler.keyStates[RIGHT] == KEYDOWN){
@@ -182,7 +186,7 @@ GameState.prototype.actCollisions = function(){
 	for(var i = 0; i < this.collisions.length; i++){
 		var a = this.collisions[i].colliderA;
 		var b = this.collisions[i].colliderB;
-		
+
 		a.updateCollision(b);
 		b.updateCollision(a);
 	}

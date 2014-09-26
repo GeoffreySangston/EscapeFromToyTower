@@ -10,7 +10,7 @@ InitState.prototype.init = function(game){
 	
 		game.roundManager = new RoundManager(0);
 		game.player = new Player(0,0,0);
-		game.player.setCenter(GAMEWIDTH/2, GAMEHEIGHT/2);
+		game.player.setCenter(96, 96);
 		console.log("CENTEREERD: " + game.player.x + " : " + game.player.y);
 		game.imageHandler.queueDownload("img/wall.png");
 		
