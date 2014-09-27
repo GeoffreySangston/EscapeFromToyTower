@@ -125,22 +125,3 @@ Entity.prototype.updateCollision = function(oe){
 
 };
 
-/*
-FLOCKING
-
-Could optimize by keeping track of specific flock
-arrays instead of iterating through the entire entity
-array
-
-The entityIdTypes parameter is an array of the types of
-entities that this entity should try to flock with
-*/
-Entity.prototype.computeAlignment = function(entityIdTypes){
-	
-};
-Entity.prototype.computeCohesion = function(entityIdTypes){
-
-};
-Entity.prototype.computeSeparation = function(entityIdTypes){
-	
-};

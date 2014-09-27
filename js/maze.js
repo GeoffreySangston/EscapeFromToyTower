@@ -188,6 +188,7 @@ Maze.prototype.__fillBlock = function(val, row, col, mazeTiles){
 	}
 };
 
+
 function MazeNode(val,r,c){
 	this.value = val;
 	this.row = r;

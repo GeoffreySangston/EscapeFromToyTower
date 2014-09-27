@@ -9,7 +9,9 @@ ToyStateFactory.prototype.getState = function(stateId){
 	switch(stateId){
 		case INITSTATE: return new InitState();
 		case MENUSTATE: return new MenuState();
+		case ROUNDLOADSTATE: return new RoundLoadState();
 		case GAMESTATE: return new GameState();
+		case GAMEOVERSTATE: return new GameOverState();
 		default:
 	
 	}

@@ -4,7 +4,9 @@ var GAMEHEIGHT = 512;
 // STATES
 var INITSTATE = 0; // checks whether a game file exists in localstorage + other stuff
 var MENUSTATE = 1;
-var GAMESTATE = 2;
+var ROUNDLOADSTATE = 2;
+var GAMESTATE = 3;
+var GAMEOVERSTATE = 4;
 
 
 // KEY INFORMATION
@@ -34,9 +36,12 @@ var SPAWNABLE = 0;
 var BULLET = 1;
 var WALL = 2;
 var PLAYER = 3;
+var GAMEITEM = 4;
 
 // SPAWNABLE TYPES
-
+var LITTLESUSIE = 0;
+var BIGBEAR = 1;
+var STAIRS = 2;
 
 // DEATH TYPES
 

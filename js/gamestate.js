@@ -8,6 +8,7 @@ function GameState(){
 	this.curRound;
 	
 	this.entities;	
+	this.spaces;
 	this.collisions;
 	
 	this.curDialogue;
@@ -26,46 +27,38 @@ GameState.prototype.init = function(game){ // init from here because may have to
 	this.localTicks = 0;
 	
 	this.entities = [];
+	this.spaces = [];
 	this.collisions = [];
 	
 
-	this.curRound = game.roundManager.getCurRound();
 	
-	this.initMazeWalls();
-	this.entities.push(game.player);
+	this.initRound(game);
+
 	
 	//game.audioHandler.cache["audio/DopestRiff3.mp3"].play();
 };
 
-GameState.prototype.initMazeWalls = function(){
-	var maze = this.curRound.maze;
-	for(var i = 0; i < maze.numTileRows; i++){
-		for(var j = 0; j < maze.numTileColumns; j++){
-			var curTileVal = maze.mazeTiles[i*maze.numTileColumns + j];
-			var curNumBlocksWide = 0;
-			var wall = new Wall(-1,-1);
-			var wallStartX = wall.blockWidth*j;
-			var wallStartY = wall.blockHeight*i;
-			
-			while(curTileVal == 1 && j < maze.numTileColumns){				
-				curTileVal = maze.mazeTiles[i*maze.numTileColumns + (j+1)];
-				if(curTileVal == 1){
-					j++;
-				}
-				curNumBlocksWide++;
-			}
-			
-			if(curNumBlocksWide > 0){
-				wall.viewWidth = curNumBlocksWide * wall.blockWidth;
-				wall.collisionWidth = wall.viewWidth;
-				wall.x = wallStartX;
-				wall.y = wallStartY;
-				this.entities.push(wall);
-			}
-		}
-	}
+GameState.prototype.initRound = function(game){
+	this.curRound = game.roundManager.getCurRound();
+	this.curRound.initRound(game);
+	this.addMazeWalls();
+	this.addMazeEntities();
 	
-	console.log(this.entities);
+}
+
+GameState.prototype.addMazeWalls = function(){
+	var mazeWalls = this.curRound.mazeWalls;
+	
+	for(var i = 0; i < mazeWalls.length; i++){
+		this.entities.push(mazeWalls[i]);
+	}
+};
+
+GameState.prototype.addMazeEntities = function(){
+	var roundEntities = this.curRound.roundEntities;
+	for(var i = 0; i < roundEntities.length; i++){
+		this.entities.push(roundEntities[i]);
+	}
 };
 
 GameState.prototype.destroy = function(game){
