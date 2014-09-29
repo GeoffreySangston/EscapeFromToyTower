@@ -23,6 +23,7 @@ function Maze(r,c){
 	this.wallTilesWide = 1;
 	this.wallTilesHigh = 1;
 	
+	
 	/*
 	mazeTileSpecifiers is a series of products of combinations of
 	the 4 prime numbers 2,3,5,7. These numbers correspond to
@@ -162,6 +163,13 @@ Maze.prototype.__initMazeTiles = function(){
 	}
 	
 	return mazeTiles;
+};
+
+Maze.prototype.calcRow = function(tileIndex){
+	return Math.floor(tileIndex/this.numTileColumns);
+};
+Maze.prototype.calcColumn = function(tileIndex){
+	return tileIndex % this.numTileColumns;
 };
 
 /*

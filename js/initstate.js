@@ -11,10 +11,23 @@ InitState.prototype.init = function(game){
 		game.roundManager = new RoundManager(0);
 		game.player = new Player(0,0,0);
 		game.player.setCenter(96, 96);
-		console.log("CENTEREERD: " + game.player.x + " : " + game.player.y);
-		game.imageHandler.queueDownload("img/wall.png");
 		
-		//game.audioHandler.queueDownload("audio/alive.m4a");
+		game.lost = false;
+	
+		game.showedFirstDialogue = false;
+
+		game.imageHandler.queueDownload("img/wall.png");
+		game.imageHandler.queueDownload("img/friendlybar.png");
+		game.imageHandler.queueDownload("img/friendlybarback.png");
+		game.imageHandler.queueDownload("img/key.png");
+		game.imageHandler.queueDownload("img/floor.png");
+		game.imageHandler.queueDownload("img/dialoguebox.png");
+		game.imageHandler.queueDownload("img/stairs.png");
+		game.imageHandler.queueDownload("img/mrbear.png");
+		game.imageHandler.queueDownload("img/you.png");
+		game.imageHandler.queueDownload("img/ammo.png");
+		
+		game.audioHandler.queueDownload("audio/CreepyGameRough1.mp3");
 		this.downloadAndLaunch(game);
 		
 		
@@ -27,8 +40,8 @@ InitState.prototype.downloadAndLaunch = function(game){
 InitState.prototype.__imageDownloadCallback = function(game){
 	game.audioHandler.downloadAll(
 		game.__setState.bind(game), 
-		//MENUSTATE
-		GAMESTATE
+		MENUSTATE
+		//GAMESTATE
 	);
 }
 

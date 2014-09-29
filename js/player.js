@@ -2,7 +2,7 @@
 Player defines the base of the turret. It also has a contained entity called PlayerGun.
 */
 function Player(x,y, theta){
-	this.spriteSheetRef = "img/wall.png";
+	this.spriteSheetRef = "img/you.png";
 	
 	this.type = PLAYER;
 	this.x = x;
@@ -23,14 +23,13 @@ function Player(x,y, theta){
 	this.collisionX = this.x;
 	this.collisionY = this.y;
 	
-
-	
-
-	this.maxHealth = 50;
-	this.curHealth = this.maxHealth;
-	
-	this.zHeight = 0;
+	this.alive = true;
+	this.zHeight = 1;
 	this.speed = 3;
+	
+	this.gun = new Gun();
+	
+	this.toysCollected = 0;
 }
 
 Player.prototype = Object.create(Entity.prototype);
@@ -56,23 +55,19 @@ or variables who other entities don't depend from
 Player.prototype.updateCollision = function(oe){
 	switch(oe.type){
 		case WALL:
-			var x = this.x;
-			var y = this.y;
-			
-			this.x = this.lastX;
-			if(!this.collides(oe)){ // this is to allow sliding along
-				break;				// the wall even though it's colliding
-			}						// along one direction
-			
-			this.x = x;
-			this.y = this.lastY;    // same as above
-			if(!this.collides(oe)){
-				break;
-			}
-			
-			this.x = this.lastX;
-			this.y = this.lastY;
+			this.actWallCollision(oe);
 			break;
+		case SPAWNABLE:
+			if(!oe.friendly){
+				this.alive = false;
+			} else {
+				this.toysCollected++;
+			}
+			break;
+		case GAMEITEM:
+			if(oe.subType == AMMO){
+				this.gun.ammo += 5;
+			}
 		default:
 	}
 };

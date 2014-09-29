@@ -19,9 +19,11 @@ var LEFT = 37;
 var UP = 38;
 var RIGHT = 39;
 var DOWN = 40;
+var SPACE = 32;
 var X = 88;
 var Z = 90;
 var A = 65;
+var M = 77;
 var W = 87;
 var D = 68;
 var S = 83;
@@ -43,12 +45,8 @@ var LITTLESUSIE = 0;
 var BIGBEAR = 1;
 var STAIRS = 2;
 
-// DEATH TYPES
-
-
-// GUNTYPES
-
-
-// BULLETTYPES
+// GAMEITEMS
+var AMMO = 0;
+var KEY = 1;
 
 

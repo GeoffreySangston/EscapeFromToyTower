@@ -4,6 +4,8 @@ function Dialogue(statements, skippable){
 	this.curStatementStartTicks;
 	this.advanceOnTicks;
 	this.skippable = skippable;
+	
+	console.log(statements);
 }
 
 Dialogue.prototype.init = function(game){

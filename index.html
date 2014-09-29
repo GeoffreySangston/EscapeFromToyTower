@@ -7,28 +7,37 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 
 
-	<script src="../BohoEngine/animframepolyfill.js"></script>
-	<script src="../BohoEngine/audioplayer.js"></script>
-	<script src="../BohoEngine/game.js"></script>
-	<script src="../BohoEngine/state.js"></script>
-	<script src="../BohoEngine/statefactory.js"></script>
-	<script src="../BohoEngine/statemachine.js"></script>
-	<script src="../BohoEngine/eventhandler.js"></script>
-	<script src="../BohoEngine/localstoragehandler.js"></script>
-	<script src="../BohoEngine/inputhandler.js"></script>
-	<script src="../BohoEngine/imagehandler.js"></script>
-	<script src="../BohoEngine/audiohandler.js"></script>
-	<script src="../BohoEngine/renderer.js"></script>
-	<script src="../BohoEngine/htmlactuator.js"></script>
-	<script src="../BohoEngine/engine.js"></script>
+	<script src="BohoEngine/animframepolyfill.js"></script>
+	<script src="BohoEngine/audioplayer.js"></script>
+	<script src="BohoEngine/game.js"></script>
+	<script src="BohoEngine/state.js"></script>
+	<script src="BohoEngine/statefactory.js"></script>
+	<script src="BohoEngine/statemachine.js"></script>
+	<script src="BohoEngine/eventhandler.js"></script>
+	<script src="BohoEngine/localstoragehandler.js"></script>
+	<script src="BohoEngine/inputhandler.js"></script>
+	<script src="BohoEngine/imagehandler.js"></script>
+	<script src="BohoEngine/audiohandler.js"></script>
+	<script src="BohoEngine/renderer.js"></script>
+	<script src="BohoEngine/htmlactuator.js"></script>
+	<script src="BohoEngine/engine.js"></script>
 	
 	<script src="js/globals.js"></script>
 	<script src="js/collision.js"></script>
 	<script src="js/entity.js"></script>
 	
-	<script src="js/bullet.js"></script>
-	<script src="js/wall.js"></script>
 	
+	<script src="js/bullet.js"></script>
+	<script src="js/ammo.js"></script>
+	<script src="js/wall.js"></script>
+	<script src="js/toy.js"></script>
+	<script src="js/stairs.js"></script>
+	<script src="js/key.js"></script>
+	<script src="js/gun.js"></script>
+	
+	<script src="js/space.js"></script>
+	
+	<script src="js/spawnfactory.js"></script>
 	<script src="js/maze.js"></script>
 	<script src="js/player.js"></script>
 	<script src="js/roundmanager.js"></script>
@@ -36,10 +45,11 @@
 	<script src="js/initstate.js"></script>
 	<script src="js/menustate.js"></script>
 	<script src="js/menuitem.js"></script>
+	<script src="js/menueventhandler.js"></script>
+	<script src="js/roundloadstate.js"></script>
 	<script src="js/gamestate.js"></script>
 	<script src="js/gameeventhandler.js"></script>
-	<script src="js/gamelosestate.js"></script>
-	<script src="js/gamewinstate.js"></script>
+	<script src="js/gameoverstate.js"></script>
 	<script src="js/toygame.js"></script>
 	<script src="js/toystatefactory.js"></script>
 	<script src="js/toyinputhandler.js"></script>
@@ -50,7 +60,23 @@
 <body>
 	<div id="page-container">
 		<div id="page">
+			<h1> Escape From Toy Tower! </h1>
 			<canvas id="canvas"></canvas>
+			<div id="explanation">
+				<h3>Instructions</h3>
+				<p>
+				Get to the bottom floor of this dreaded mansion before your toys take revenge on you! All levels are randomly generated for random amounts of frustration... err fun!
+				</p>
+				<p>
+				Use arrow/WASD keys to move and space to shoot. Attempt to appease your toys by collecting them while they are still friendly. Careful! Angry will instantly kill you if you hit them so stay clear!
+				</p>
+				
+				<p>
+				This game was created in one week for the "Week Of Awesome II" game programming competition.
+
+				Programming and (sadly) art done by Geoffrey Sangston. Music by Kevin Sangston (thanks brotha!).
+				</p>
+			</div>
 		</div>
 	</div>
 

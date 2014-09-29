@@ -1,11 +1,7 @@
 function Bullet(x,y,theta){
-	this.spriteSheetRef = "img/bigbulletbase.png";
+	this.spriteSheetRef = "img/wall.png";
 	this.type = BULLET;
-	this.bulletType = NORMALBULLET;
-	
-	this.collidable = true;
-	this.collisionType = CIRCLE;
-	this.collisionRadius = 2;
+
 	
 	this.x = x;
 	this.y = y;
@@ -14,6 +10,12 @@ function Bullet(x,y,theta){
 	this.theta = theta;
 	this.viewWidth = 4;
 	this.viewHeight = 4;
+	
+	
+	this.collidable = true;
+	this.collisionType = RECTANGLE;
+	this.collisionWidth = this.viewWidth;
+	this.collisionHeight = this.viewHeight;
 	
 	this.speed = 8;
 	this.damage; // damage is given by the gun shooting the bullet
@@ -49,10 +51,8 @@ Bullet.prototype.updateCollision = function(oe){
 		case SPAWNABLE:
 			this.hitSomething = true;
 		break;
-		case BULLET:
-			if(oe.bulletType == PROJECTILEZOMBIE){
-				this.hitSomething = true;
-			}
+		case WALL:
+			this.hitSomething = true;
 		break;
 		default:
 

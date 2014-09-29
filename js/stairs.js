@@ -1,6 +1,6 @@
 function Stairs(x,y){
 
-	this.spriteSheetRef = "img/wall.png";
+	this.spriteSheetRef = "img/stairs.png";
 
 	
 	this.type = GAMEITEM;
@@ -25,7 +25,7 @@ function Stairs(x,y){
 	this.zHeight = 0;	
 	
 	this.revealed = false;
-	this.collidable = true;
+	this.collidable = false;
 	this.playerSteppedInto = false;
 }
 
@@ -41,6 +41,9 @@ Stairs.prototype.updateCollision = function(oe){
 			this.playerSteppedInto = true;
 			break;
 		default:
-			console.log(oe.type);
 	}
+};
+
+Stairs.prototype.shouldRender = function(){
+	return this.collidable;
 };

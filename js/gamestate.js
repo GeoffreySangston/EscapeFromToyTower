@@ -11,6 +11,8 @@ function GameState(){
 	this.spaces;
 	this.collisions;
 	
+	this.shoutOutText;
+	
 	this.curDialogue;
 	
 	this.playMode = true; // currently only two modes, play mode and dialogue mode so 
@@ -30,7 +32,7 @@ GameState.prototype.init = function(game){ // init from here because may have to
 	this.spaces = [];
 	this.collisions = [];
 	
-
+	this.shoutOutText = [];
 	
 	this.initRound(game);
 
@@ -43,6 +45,10 @@ GameState.prototype.initRound = function(game){
 	this.curRound.initRound(game);
 	this.addMazeWalls();
 	this.addMazeEntities();
+	
+	if(game.roundManager.curRoundIndex == 0){ // extremely cut for time, I don't want them skipping the event
+		this.curRound.roundEntities[2].ticksFriendlyFor = 4294967295;
+	}
 	
 }
 
@@ -68,19 +74,21 @@ GameState.prototype.destroy = function(game){
 
 	game.renderer.cameraX = 0;
 	game.renderer.cameraY = 0;
+	
+	game.player.gun.lastFireTick = 0;
 };
 
 GameState.prototype.update = function(game){
 	this.handleEvents(game);
-	if(this.playMode){
+	if(!this.curDialogue){
 		this.handlePlayInputs(game);
 	} else {
 		this.handleDialogueInputs(game);
 		this.handleDialogue(game);
 	}
-	this.updateEntities(game);
 	this.checkCollisions();
 	this.actCollisions();
+	this.updateEntities(game);
 	this.cleanup(game);
 	this.centerCamera(game);
 	this.localTicks++;
@@ -104,15 +112,36 @@ GameState.prototype.handlePlayInputs = function(game){
 	
 	if(game.inputHandler.keyStates[A] == KEYDOWN || game.inputHandler.keyStates[LEFT] == KEYDOWN){
 		player.moveLeft();
+		player.gun.theta = Math.PI;
 	} else if(game.inputHandler.keyStates[D] == KEYDOWN || game.inputHandler.keyStates[RIGHT] == KEYDOWN){
 		player.moveRight();
+		player.gun.theta = 0;
 	}
 	
 	if(game.inputHandler.keyStates[W] == KEYDOWN || game.inputHandler.keyStates[UP] == KEYDOWN){
 		player.moveUp();
+		player.gun.theta = 3*Math.PI/2;
 	} else if(game.inputHandler.keyStates[S] == KEYDOWN || game.inputHandler.keyStates[DOWN] == KEYDOWN){
 		player.moveDown();
+		player.gun.theta = Math.PI/2;
 	}
+	
+	if(game.inputHandler.keyStates[SPACE] == KEYUP){
+		this.shootGun(game);
+		game.inputHandler.keyStates[SPACE] = KEYSTATIC;
+	}
+	
+	if(game.inputHandler.keyStates[M] == KEYUP){
+		if(game.audioPlayer.volume > 0){
+			game.audioPlayer.setVolume(0);
+		} else {
+			game.audioPlayer.setVolume(1);
+		}
+
+		game.inputHandler.keyStates[M] = KEYSTATIC;
+	}
+	
+	
 
 	
 	// mouse
@@ -130,11 +159,11 @@ GameState.prototype.handlePlayInputs = function(game){
 
 GameState.prototype.handleDialogueInputs = function(game){
 	
-	if(game.inputHandler.keyStates[Z] == KEYUP){
-		if(this.curDialogue && this.curDialogue.skippable && !this.curDialogue.isOver() && this.curDialogue.canAdvance()){
+	if(game.inputHandler.keyStates[SPACE] == KEYUP){
+		if(this.curDialogue && this.curDialogue.skippable && !this.curDialogue.isOver()){
 			this.curDialogue.advance(game);
 		}
-		game.inputHandler.keyStates[Z] = KEYSTATIC;
+		game.inputHandler.keyStates[SPACE] = KEYSTATIC;
 	}
 };
 
@@ -143,6 +172,8 @@ GameState.prototype.handleDialogue = function(game){
 		if(this.curDialogue.timeToAdvance(game)){
 			this.curDialogue.advance(game);
 		}
+	} else if(this.curDialogue.isOver()){
+		this.curDialogue = undefined;
 	}
 };
 
@@ -154,12 +185,14 @@ GameState.prototype.setDialogue = function(dialogue, game){
 
 
 GameState.prototype.shootGun = function(game){
-	var playerGun = game.playerInfo.playerTurret.getCurGun();
+	var playerGun = game.player.gun;
 	
 
 	if(playerGun.canFire(this.localTicks)){
-		var bullet = playerGun.createBullet();
+		var bullet = playerGun.createBullet(game);
+		console.log(bullet);
 		this.entities.push(bullet);
+		playerGun.ammo--;
 		playerGun.lastFireTick = this.localTicks;
 	}
 };
@@ -197,21 +230,19 @@ GameState.prototype.updateEntities = function(game){
 };
 GameState.prototype.cleanup = function(game){
 	for(var i = this.entities.length-1; i >= 0; i--){
-		if(this.entities[i].containedEntities){
-			for(var j = this.entities[i].containedEntities.length-1; j >= 0; j--){
-				if(this.entities[i].containedEntities[j].shouldDestroy()){
-					this.entities[i].containedEntities.splice(j,1);
-				}
-			}
-		}
-		
 		if(this.entities[i].shouldDestroy()){
-			if(this.entities[i].type == SPAWNABLE || (this.entities[i].type == BULLET && this.entities[i].bulletType == PROJECTILEZOMBIE)){
-				this.curRound.numZombies--;
-				
-				if(this.entities[i].deathType == SHOT){
-					game.playerInfo.resources += this.entities[i].value;
-				}
+			this.entities[i].destroyEvent(game);
+			if(this.entities[i].type == SPAWNABLE){
+				this.curRound.numToysLeft--;
+				this.curRound.numFriendlyToysLeft--;
+				var center = this.entities[i].calcCenterXY();
+				this.curRound.lastFriendlyCX = center.x;
+				this.curRound.lastFriendlyCY = center.y;
+			}
+
+			var roundEntitiesIndex = this.curRound.roundEntities.indexOf(this.entities[i]);
+			if(roundEntitiesIndex > -1){
+				this.curRound.roundEntities.splice(roundEntitiesIndex,1);
 			}
 			this.entities.splice(i,1);
 
@@ -224,15 +255,29 @@ GameState.prototype.render = function(game){
 	game.renderer.cls();
 	var dialogueMode = !this.playMode && this.curDialogue;
 	
+	this.renderFloor(game);
+	
 	this.renderEntities(game);
+	this.renderFriendlyBars(game);
+	this.renderHUD(game);
 	
+	this.renderDialogue(game);
+
 	
-	if(dialogueMode){
-		this.renderDialogue(game);
-	} else {
-		//this.renderHealthBars(game);
+};
+
+GameState.prototype.renderFloor = function(game){
+	var background = game.imageHandler.cache["img/wall.png"];
+	game.renderer.drawImage(background, 0 - game.renderer.cameraX, 0 - game.renderer.cameraY, GAMEWIDTH, GAMEHEIGHT);
+
+	var spaces = this.curRound.mazeSpaces;
+	var floor = game.imageHandler.cache["img/floor.png"];
+	
+	for(var i = 0; i < spaces.length; i++){
+		game.renderer.drawImage(floor, spaces[i].x, spaces[i].y, spaces[i].viewWidth, spaces[i].viewHeight);
 	}
 	
+
 };
 
 GameState.prototype.renderEntities = function(game){
@@ -287,57 +332,9 @@ GameState.prototype.sortByZHeightNaive = function(entities){
 	}	
 };
 
-GameState.prototype.sortByZHeight = function(entities,l,r){
-	// quicksort, did this for educational purposes could easily (probably more efficiently 
-	// use the javascript sort function with my own comparator
-
-	var length = r - l + 1;
-	var starting = isNaN(length);
-	var startingIndex = l;
-	var left = startingIndex;
-	var right = r;
-	
-	if(starting){
-		length = entities.length;
-		startingIndex = 0;
-		left = startingIndex;
-		right = length - 1;
-	}
-	
-	if(length < 2){
-		return
-	}
-	
-	var pivot = entities[left + Math.floor(length/2)].zHeight;
-	
-	while(left <= right){
-		while(entities[left].zHeight < pivot){
-			left++;
-		}
-		while(entities[right].zHeight > pivot){
-			right--;
-		}
-		if(left <= right){
-			var temp = entities[left];
-			entities[left] = entities[right];
-			entities[right] = temp;
-			
-			left++;
-			right--;
-		}
-	}
-	
-	this.sortByZHeight(entities, startingIndex, right);
-	this.sortByZHeight(entities, left, startingIndex + length - 1);
-};
-
-
 GameState.prototype.renderDialogue = function(game){
-	if(!this.curDialogue.isOver()){ // kind of sloppy because playMode being true 
-									// should be equivalent to this check
-									// although I suppose this could be useful
-									// if I want the dialogue box to close and then
-									// some action to happen on the screen
+	if(this.curDialogue && !this.curDialogue.isOver()){ 
+									
 									
 		var cameraX = game.renderer.cameraX;
 		var cameraY = game.renderer.cameraY;
@@ -349,11 +346,64 @@ GameState.prototype.renderDialogue = function(game){
 		var width = GAMEWIDTH;
 		var height = dialogueHeight;
 		game.renderer.drawImage(img,x,y,width,height);
-	
+
 		var dialogueStatement = this.curDialogue.getCurStatement();
-		game.renderer.drawText(x+50,y+20,dialogueStatement.speakerName,14);
+
+		game.renderer.drawText(x+50,y+20,dialogueStatement.speakerName,14,"#000000");
 	
-		game.renderer.drawText(x+20,y+80,dialogueStatement.text,14);
+		if(dialogueStatement.text.length < 62){
+			game.renderer.drawText(x+20,y+80,dialogueStatement.text,14,"#000000");
+		} else {
+			var textOne = dialogueStatement.text.substring(0,62);
+			var textTwo = dialogueStatement.text.substring(62, dialogueStatement.text.length);
+			game.renderer.drawText(x+20,y+80,textOne,14,"#000000");
+			game.renderer.drawText(x+20,y+100,textTwo,14,"#000000");
+		}
+		
 	
 	}
+};
+
+GameState.prototype.renderFriendlyBars = function(game){
+	var roundEntities = this.curRound.roundEntities;
+	
+	for(var i = 0; i < roundEntities.length; i++){
+		var entity = roundEntities[i];
+		if(entity.type == SPAWNABLE){
+			if(entity.hasEncounteredPlayer && entity.stillFriendly(this.localTicks)){
+				var maxBarWidth = roundEntities[i].friendlyBarMaxWidth;
+				
+				var barWidth = roundEntities[i].calcCurFriendlyBarWidth(this.localTicks);
+			
+				var entityX = roundEntities[i].x;
+				var entityY = roundEntities[i].y;
+				
+				var entityWidth = roundEntities[i].viewWidth;
+				var barX = entityX + (entityWidth - maxBarWidth)/2;
+				//var barX = entityX;
+				var barY = entityY - 10;
+				
+				game.renderer.drawImage(game.imageHandler.cache["img/friendlybarback.png"],barX,barY,maxBarWidth,4);
+				game.renderer.drawImage(game.imageHandler.cache["img/friendlybar.png"],barX,barY,barWidth,4);
+			}
+		}
+	}
+};
+
+GameState.prototype.renderHUD = function(game){
+	
+	game.renderer.drawFixedText(GAMEWIDTH/2 - 20 - 15,36,"FLOOR " + (game.roundManager.rounds.length - game.roundManager.curRoundIndex), 16,"#666666");
+	game.renderer.drawFixedText(50 - 15,42,"TOYS LEFT: " + this.curRound.numToysLeft,14,"#FF0000");
+	game.renderer.drawFixedText(50 - 15,58,"AMMO: " + game.player.gun.ammo,14,"#FF0000");
+
+	var key = game.stateMachine.curState.curRound.key;
+	if(!key || !key.collected){
+		game.renderer.drawFixedText(GAMEWIDTH - 50 - 15, 50, "KEY", 16, "#666666");
+	} else {
+		game.renderer.drawFixedText(GAMEWIDTH - 50 - 15, 50, "KEY", 16, "#FFFC54");
+	}
+};
+
+GameState.prototype.renderShoutOutText = function(){
+	
 };

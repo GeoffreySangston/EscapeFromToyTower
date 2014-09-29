@@ -8,6 +8,8 @@ function Entity(x,y){
 	this.type;
 	this.x = x;
 	this.y = y;
+	this.lastX = this.x;
+	this.lastY = this.y;
 
 	this.viewWidth;
 	this.viewHeight;
@@ -112,6 +114,10 @@ Entity.prototype.shouldDestroy = function(){
 	return false;
 };
 
+Entity.prototype.destroyEvent = function(game){
+	
+};
+
 Entity.prototype.shouldRender = function(){
 	return true;
 	//return (this.x + this.viewWidth > 0 && this.x < GAMEWIDTH) && (this.y + this.viewHeight > 0 && this.y < GAMEHEIGHT);
@@ -125,3 +131,32 @@ Entity.prototype.updateCollision = function(oe){
 
 };
 
+Entity.prototype.actWallCollision = function(oe){
+	var x = this.x;
+	var y = this.y;
+			
+	this.x = this.lastX;
+	if(!this.collides(oe)){ // this is to allow sliding along
+		return;				// the wall even though it's colliding
+	}						// along one direction
+		
+	this.x = x;
+	this.y = this.lastY;    // same as above
+	if(!this.collides(oe)){
+		return;
+	}
+				
+	this.x = this.lastX;
+	this.y = this.lastY;
+};
+
+Entity.prototype.calcCurMazeSquareIndex = function(game){
+	var maze = game.stateMachine.curState.curRound.maze;
+	var spaces = game.stateMachine.curState.curRound.mazeSpaces;
+	
+	var centerXY = this.calcCenterXY();
+	var column = Math.floor(centerXY.x/spaces[0].viewWidth);
+	var row = Math.floor(centerXY.y/spaces[0].viewHeight);
+	
+	return maze.numTileColumns * row + column;
+};

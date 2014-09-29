@@ -16,6 +16,10 @@ function ToyGame(){
 	this.roundManager;
 	this.player;
 	
+	this.lost;
+	
+	this.showedFirstDialogue;
+	
 	
 }
 

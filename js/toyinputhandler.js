@@ -9,6 +9,7 @@ function ToyInputHandler(gameContainer){
 	this.keyStates[Z] = KEYSTATIC;
 	this.keyStates[X] = KEYSTATIC;
 	this.keyStates[A] = KEYSTATIC;
+	this.keyStates[M] = KEYSTATIC;
 	this.keyStates[W] = KEYSTATIC;
 	this.keyStates[D] = KEYSTATIC;
 	this.keyStates[S] = KEYSTATIC;
@@ -17,6 +18,7 @@ function ToyInputHandler(gameContainer){
 	this.keyStates[RIGHT] = KEYSTATIC;
 	this.keyStates[DOWN] = KEYSTATIC;
 	this.keyStates[SHIFT] = KEYSTATIC;
+	this.keyStates[SPACE] = KEYSTATIC;
 	
 	this.mouseState = KEYSTATIC;
 	this.mouseX = 0;
@@ -32,7 +34,7 @@ ToyInputHandler.prototype.listen = function(){
 	window.addEventListener('keydown', function(e){
 		//console.log(e.keyCode);
 		if(!isNaN(self.keyStates[e.keyCode])){ // if it's a key we're paying attention to
-			if(e.keyCode == UP || e.keyCode == DOWN){
+			if(e.keyCode == UP || e.keyCode == DOWN || e.keyCode == SPACE){
 				e.preventDefault(); // prevents it from scrolling up/down when using those arrow keys
 			}
 			

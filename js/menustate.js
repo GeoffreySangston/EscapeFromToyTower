@@ -15,6 +15,8 @@ MenuState.prototype.init = function(game){
 		this.menuItems[i].x = 50;
 		this.menuItems[i].y = i*30 + 100 + i*20;
 	}
+	
+	game.audioPlayer.loopAudio("audio/CreepyGameRough1.mp3",0,1);
 };
 
 MenuState.prototype.destroy = function(game){

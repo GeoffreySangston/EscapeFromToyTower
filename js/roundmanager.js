@@ -14,22 +14,31 @@ RoundManager.prototype.getCurRound = function(){
 RoundManager.prototype.createRounds = function(){
 	var rounds = [];
 
-	var round1EntityIds = [LITTLESUSIE];
+	var round1EntityIds = [];
+	for(var i = 0; i < 1; i++){
+		round1EntityIds.push(LITTLESUSIE);
+	}
 	rounds.push(new Round(2,3,round1EntityIds, this.spawnFactory));
-	var round2EntityIds = [LITTLESUSIE, LITTLESUSIE];
-	rounds.push(new Round(3,5,round2EntityIds, this.spawnFactory));
-	var round3EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
-	rounds.push(new Round(4,6,round3EntityIds, this.spawnFactory));
-	var round4EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
-	rounds.push(new Round(6,8,round4EntityIds, this.spawnFactory));
-	var round5EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
-	rounds.push(new Round(7,10,round5EntityIds, this.spawnFactory));
-	var round6EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
-	rounds.push(new Round(7,10,round6EntityIds, this.spawnFactory));
+	
+	var round2EntityIds = [];
+	for(var i = 0; i < 2; i++){
+		round2EntityIds.push(LITTLESUSIE);
+	}
+	rounds.push(new Round(3,4,round2EntityIds, this.spawnFactory));
+	
+	var round3EntityIds = [LITTLESUSIE];
+	rounds.push(new Round(4,5,round3EntityIds, this.spawnFactory));
+	
+	var round4EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
+	rounds.push(new Round(4,5,round4EntityIds, this.spawnFactory));
+	var round5EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
+	rounds.push(new Round(5,5,round5EntityIds, this.spawnFactory));
+	var round6EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
+	rounds.push(new Round(5,6,round6EntityIds, this.spawnFactory));
 	var round7EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
-	rounds.push(new Round(7,10,round7EntityIds, this.spawnFactory));
+	rounds.push(new Round(6,7,round7EntityIds, this.spawnFactory));
 	var round8EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
-	rounds.push(new Round(7,10,round8EntityIds, this.spawnFactory));
+	rounds.push(new Round(7,8,round8EntityIds, this.spawnFactory));
 	var round9EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
 	rounds.push(new Round(8,9,round9EntityIds, this.spawnFactory));
 	var round10EntityIds = [LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE, LITTLESUSIE];
@@ -52,10 +61,23 @@ function Round(mazeWidth, mazeHeight, roundEntityIds, spawnFactory){
 	this.mazeWalls;
 	this.mazeSpaces;
 	
-	this.roundEntityIds = roundEntityIds;
+	this.roundEntityIds = [];
+	var mazeArea = mazeWidth*mazeHeight;
+	var numToys = Math.pow(Math.floor(mazeArea/6),1.05);
+	
+	for(var i = 0; i < numToys; i++){
+		console.log("HAHA");
+		this.roundEntityIds.push(LITTLESUSIE);
+	}
 	this.roundEntities;
-
+	
+	this.numToysLeft = this.roundEntityIds.length;
+	this.numFriendlyToysLeft = this.numToysLeft;
+	this.lastFriendlyCX;
+	this.lastFriendlyCY;
+	
 	this.stairs;
+	this.key;
 }
 
 
