@@ -25,7 +25,7 @@ function Player(x,y, theta){
 	
 	this.alive = true;
 	this.zHeight = 1;
-	this.speed = 3;
+	this.speed = 5;
 	
 	this.gun = new Gun();
 	
