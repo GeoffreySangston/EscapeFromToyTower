@@ -25,11 +25,11 @@ function Toy(x,y,toyId){
 	this.collisionX = this.x;
 	this.collisionY = this.y;
 	
-	this.maxHealth = 5;
+	this.maxHealth = 4;
 	this.curHealth = this.maxHealth;
 	
 	this.zHeight = 1;
-	this.speed = 2;	
+	this.speed = 4;	
 	
 	this.hasEncounteredPlayer = false;
 	this.encounterTick;
