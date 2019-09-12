@@ -29,7 +29,7 @@ function Toy(x,y,toyId){
 	this.curHealth = this.maxHealth;
 	
 	this.zHeight = 1;
-	this.speed = 4;	
+	this.speed = 3;	
 	
 	this.hasEncounteredPlayer = false;
 	this.encounterTick;
